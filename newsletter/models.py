@@ -513,6 +513,11 @@ class Message(models.Model):
     def get_next_article_sortorder(self):
         """ Get next available sortorder for Article. """
 
+        # bypass issue due to django 4.1.x deprecation:
+        # https://docs.djangoproject.com/en/4.1/releases/4.1/#reverse-foreign-key-changes-for-unsaved-model-instances
+        if self.articles.name == None:
+            return 10
+
         next_order = self.articles.aggregate(
             models.Max('sortorder')
         )['sortorder__max']
